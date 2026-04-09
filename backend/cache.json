@@ -1,0 +1,45 @@
+{
+  "Welcome to jcu ideas lab": "14779a9d0615e8a7c4211ddcf769ac39.mp4",
+  "32b2d3ab247baf896577f1c020475693": {
+    "script": "intro",
+    "filename": "32b2d3ab247baf896577f1c020475693.mp4",
+    "text": "Hello, I am the JCU Ideas Lab Assistant. I am here to introduce our research, innovation projects, and creative ideas.",
+    "voice_id": "en-GB-AbbiNeural",
+    "source_url": "https://create-images-results.d-id.com/DefaultPresenters/Noelle_f/image.png"
+  },
+  "ac103ac7a0e31f35ccde660ebde88365": {
+    "script": "bye",
+    "filename": "ac103ac7a0e31f35ccde660ebde88365.mp4",
+    "text": "Bye, see you later. Thank you for visiting JCU Ideas Lab, and I hope to see you again soon.",
+    "voice_id": "en-US-JennyNeural",
+    "source_url": "https://create-images-results.d-id.com/DefaultPresenters/Noelle_f/image.png"
+  },
+  "5162b76c07d3536f7be9c7ab64520d9f": {
+    "script": "welcome",
+    "filename": "5162b76c07d3536f7be9c7ab64520d9f.mp4",
+    "text": "Hello, welcome to JCU Ideas Lab. We translate research expertise into innovations that generate jobs and foster economic growth for Cairns and the broader region.",
+    "voice_id": "en-US-JennyNeural",
+    "source_url": "https://create-images-results.d-id.com/DefaultPresenters/Noelle_f/image.png"
+  },
+  "1759fc53e9187deee2896508ae521d09": {
+    "script": "welcome",
+    "filename": "1759fc53e9187deee2896508ae521d09.mp4",
+    "text": "Hello, welcome to JCU Ideas Lab. ",
+    "voice_id": "en-US-JennyNeural",
+    "source_url": "https://create-images-results.d-id.com/DefaultPresenters/Noelle_f/image.png"
+  },
+  "3c0f6724cac56cbdb19141381e3faf3c": {
+    "script": "intro",
+    "filename": "3c0f6724cac56cbdb19141381e3faf3c.mp4",
+    "text": "Hello, I am the JCU Ideas Lab Assistant. ",
+    "voice_id": "en-GB-AbbiNeural",
+    "source_url": "https://create-images-results.d-id.com/DefaultPresenters/Noelle_f/image.png"
+  },
+  "a7a7236096b74dcf3da22057a081b666": {
+    "script": "bye",
+    "filename": "a7a7236096b74dcf3da22057a081b666.mp4",
+    "text": "Thank you for visiting JCU Ideas Lab.",
+    "voice_id": "en-US-JennyNeural",
+    "source_url": "https://create-images-results.d-id.com/DefaultPresenters/Noelle_f/image.png"
+  }
+}
