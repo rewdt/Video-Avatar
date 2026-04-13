@@ -57,27 +57,27 @@ HEADERS = {
 # =========================
 # 你的 3 段固定脚本
 # =========================
-source_url = 'https://create-images-results.d-id.com/DefaultPresenters/Noelle_f/image.png'
+source_url = 'https://i.postimg.cc/qBXVJ3m0/boy.png'
 SCRIPTS = {
     "welcome": {
         "text": (
             "Hello, welcome to JCU Ideas Lab. "
         ),
-        "voice_id": "en-US-JennyNeural",
+        "voice_id": "en-US-GuyNeural",
         "source_url": source_url,
     },
     "intro": {
         "text": (
             "Hello, I am the JCU Ideas Lab Assistant. "
         ),
-        "voice_id": "en-GB-AbbiNeural",
+        "voice_id": "en-US-GuyNeural",
         "source_url": source_url,
     },
     "bye": {
         "text": (
             "Thank you for visiting JCU Ideas Lab."
         ),
-        "voice_id": "en-US-JennyNeural",
+        "voice_id": "en-US-GuyNeural",
         "source_url": source_url,
     },
 }

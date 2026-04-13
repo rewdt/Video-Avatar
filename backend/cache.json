@@ -41,5 +41,33 @@
     "text": "Thank you for visiting JCU Ideas Lab.",
     "voice_id": "en-US-JennyNeural",
     "source_url": "https://create-images-results.d-id.com/DefaultPresenters/Noelle_f/image.png"
+  },
+  "2d7c6454d5b16079ffdeee2e6b0962ea": {
+    "script": "welcome",
+    "filename": "2d7c6454d5b16079ffdeee2e6b0962ea.mp4",
+    "text": "Hello, welcome to JCU Ideas Lab. ",
+    "voice_id": "en-US-JennyNeural",
+    "source_url": "https://i.postimg.cc/qBXVJ3m0/boy.png"
+  },
+  "0e83f27410b995b870a9daf5d38d7bea": {
+    "script": "welcome",
+    "filename": "0e83f27410b995b870a9daf5d38d7bea.mp4",
+    "text": "Hello, welcome to JCU Ideas Lab. ",
+    "voice_id": "en-US-GuyNeural",
+    "source_url": "https://i.postimg.cc/qBXVJ3m0/boy.png"
+  },
+  "f24e74e180d24879e3651b4fa1cc789d": {
+    "script": "bye",
+    "filename": "f24e74e180d24879e3651b4fa1cc789d.mp4",
+    "text": "Thank you for visiting JCU Ideas Lab.",
+    "voice_id": "en-US-GuyNeural",
+    "source_url": "https://i.postimg.cc/qBXVJ3m0/boy.png"
+  },
+  "d34703d806797b3e6fa71a8ef5403611": {
+    "script": "intro",
+    "filename": "d34703d806797b3e6fa71a8ef5403611.mp4",
+    "text": "Hello, I am the JCU Ideas Lab Assistant. ",
+    "voice_id": "en-US-GuyNeural",
+    "source_url": "https://i.postimg.cc/qBXVJ3m0/boy.png"
   }
 }
