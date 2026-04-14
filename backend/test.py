@@ -4,10 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-# 允许前端访问
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Vite 默认端口
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

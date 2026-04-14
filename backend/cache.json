@@ -69,5 +69,12 @@
     "text": "Hello, I am the JCU Ideas Lab Assistant. ",
     "voice_id": "en-US-GuyNeural",
     "source_url": "https://i.postimg.cc/qBXVJ3m0/boy.png"
+  },
+  "a7e4c67bfde94d2d5889e868f287e97c": {
+    "script": "welcome",
+    "filename": "a7e4c67bfde94d2d5889e868f287e97c.mp4",
+    "text": "Hello, welcome to JCU Ideas Lab.",
+    "voice_id": "en-US-GuyNeural",
+    "source_url": "https://i.postimg.cc/qBXVJ3m0/boy.png"
   }
 }

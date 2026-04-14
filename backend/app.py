@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 # =========================
-# 基础配置
+# Basic configuration
 # =========================
 BASE_DIR = Path(__file__).resolve().parent
 ENV_PATH = BASE_DIR / ".env"
@@ -22,11 +22,11 @@ load_dotenv(dotenv_path=ENV_PATH)
 
 app = FastAPI()
 
+# Enable static file serving (images and generated videos)
 app.mount("/images", StaticFiles(directory="images"), name="images")
-@app.get("/")
-def root():
-    return {"message": "server is running"}
+app.mount("/videos", StaticFiles(directory=str(VIDEOS_DIR)), name="videos")
 
+# Enable CORS for frontend (React)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -37,16 +37,11 @@ app.add_middleware(
 
 VIDEOS_DIR.mkdir(exist_ok=True)
 
-if not CACHE_FILE.exists():
-    CACHE_FILE.write_text("{}", encoding="utf-8")
-
-app.mount("/videos", StaticFiles(directory=str(VIDEOS_DIR)), name="videos")
-
+# =========================
+# D-ID API configuration
+# =========================
 DID_API_KEY = os.getenv("DID_API_KEY")
 DID_BASE_URL = "https://api.d-id.com"
-
-if not DID_API_KEY:
-    raise RuntimeError("DID_API_KEY 未设置，请检查 backend/.env 文件")
 
 HEADERS = {
     "Authorization": f"Basic {DID_API_KEY}",
@@ -55,61 +50,67 @@ HEADERS = {
 }
 
 # =========================
-# 你的 3 段固定脚本
+# Video scripts
 # =========================
 source_url = 'https://i.postimg.cc/qBXVJ3m0/boy.png'
+
 SCRIPTS = {
     "welcome": {
-        "text": (
-            "Hello, welcome to JCU Ideas Lab. "
-        ),
+        "text": "Hello, welcome to JCU Ideas Lab.",
         "voice_id": "en-US-GuyNeural",
         "source_url": source_url,
     },
     "intro": {
-        "text": (
-            "Hello, I am the JCU Ideas Lab Assistant. "
-        ),
+        "text": "Hello, I am the JCU Ideas Lab Assistant.",
         "voice_id": "en-US-GuyNeural",
         "source_url": source_url,
     },
     "bye": {
-        "text": (
-            "Thank you for visiting JCU Ideas Lab."
-        ),
+        "text": "Thank you for visiting JCU Ideas Lab.",
         "voice_id": "en-US-GuyNeural",
         "source_url": source_url,
     },
 }
 
 # =========================
-# 工具函数
+# Cache utilities
 # =========================
+
+# Load cache file
 def load_cache() -> dict:
     with open(CACHE_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
 
+# Save cache file
 def save_cache(cache_data: dict) -> None:
     with open(CACHE_FILE, "w", encoding="utf-8") as f:
         json.dump(cache_data, f, ensure_ascii=False, indent=2)
 
+# Generate unique cache key
 def make_cache_key(script_name: str, text: str, voice_id: str, source_url: str) -> str:
     raw = f"{script_name}|{text}|{voice_id}|{source_url}"
     return hashlib.md5(raw.encode("utf-8")).hexdigest()
 
+# Convert cache key to filename
 def filename_from_key(cache_key: str) -> str:
     return f"{cache_key}.mp4"
 
+# =========================
+# Video generation helpers
+# =========================
+
+# Download video from D-ID result URL
 def download_video(url: str, save_path: Path) -> None:
     response = requests.get(url, stream=True, timeout=120)
     if response.status_code != 200:
-        raise HTTPException(status_code=500, detail="下载生成视频失败")
+        raise HTTPException(status_code=500, detail="Failed to download video")
 
     with open(save_path, "wb") as f:
         for chunk in response.iter_content(chunk_size=8192):
             if chunk:
                 f.write(chunk)
 
+# Create talking avatar using D-ID API
 def create_did_video(text: str, voice_id: str, source_url: str) -> str:
     payload = {
         "source_url": source_url,
@@ -124,6 +125,7 @@ def create_did_video(text: str, voice_id: str, source_url: str) -> str:
         "name": "JCU IDEAS LAB AVATAR"
     }
 
+    # Step 1: create video request
     create_res = requests.post(
         f"{DID_BASE_URL}/talks",
         json=payload,
@@ -137,15 +139,12 @@ def create_did_video(text: str, voice_id: str, source_url: str) -> str:
             detail=create_res.text
         )
 
-    create_data = create_res.json()
-    talk_id = create_data.get("id")
-
+    talk_id = create_res.json().get("id")
     if not talk_id:
-        raise HTTPException(status_code=500, detail="D-ID 未返回 talk id")
+        raise HTTPException(status_code=500, detail="No talk ID returned")
 
-    # 轮询状态
-    max_retries = 20
-    for _ in range(max_retries):
+    # Step 2: poll status until video is ready
+    for _ in range(20):
         status_res = requests.get(
             f"{DID_BASE_URL}/talks/{talk_id}",
             headers=HEADERS,
@@ -164,7 +163,7 @@ def create_did_video(text: str, voice_id: str, source_url: str) -> str:
         if status == "done":
             result_url = status_data.get("result_url")
             if not result_url:
-                raise HTTPException(status_code=500, detail="D-ID 未返回 result_url")
+                raise HTTPException(status_code=500, detail="No result URL returned")
             return result_url
 
         if status in ("error", "failed", "rejected"):
@@ -172,11 +171,15 @@ def create_did_video(text: str, voice_id: str, source_url: str) -> str:
 
         time.sleep(3)
 
-    raise HTTPException(status_code=504, detail="视频生成超时，请稍后重试")
+    raise HTTPException(status_code=504, detail="Video generation timeout")
+
+# =========================
+# Main logic (cache + generation)
+# =========================
 
 def generate_or_get_cached_video(script_name: str) -> dict:
     if script_name not in SCRIPTS:
-        raise HTTPException(status_code=404, detail="未知脚本")
+        raise HTTPException(status_code=404, detail="Unknown script")
 
     config = SCRIPTS[script_name]
     text = config["text"]
@@ -189,7 +192,7 @@ def generate_or_get_cached_video(script_name: str) -> dict:
 
     cache_data = load_cache()
 
-    # 命中缓存
+    # Return cached video if exists
     if cache_key in cache_data and local_path.exists():
         return {
             "success": True,
@@ -198,17 +201,13 @@ def generate_or_get_cached_video(script_name: str) -> dict:
             "video_url": f"http://127.0.0.1:8000/videos/{filename}"
         }
 
-    # 调 D-ID 生成
-    result_url = create_did_video(
-        text=text,
-        voice_id=voice_id,
-        source_url=source_url,
-    )
+    # Generate new video via D-ID
+    result_url = create_did_video(text, voice_id, source_url)
 
-    # 下载到本地
+    # Download and save locally
     download_video(result_url, local_path)
 
-    # 更新缓存
+    # Update cache
     cache_data[cache_key] = {
         "script": script_name,
         "filename": filename,
@@ -226,15 +225,12 @@ def generate_or_get_cached_video(script_name: str) -> dict:
     }
 
 # =========================
-# 路由
+# Routes
 # =========================
+
 @app.get("/")
 def home():
     return {"message": "FastAPI is running"}
-
-@app.get("/ping")
-def ping():
-    return {"ok": True, "file": "app.py"}
 
 @app.post("/video/welcome")
 def video_welcome():

@@ -14,14 +14,19 @@ export default function AvatarVideo({
   error,
   onBack,
 }: Props) {
+  // Current video being played
   const [currentVideo, setCurrentVideo] = useState("");
+
+  // Whether user is leaving (used to trigger back after video ends)
   const [isLeaving, setIsLeaving] = useState(false);
 
+  // Sync video when parent updates videoUrl
   useEffect(() => {
     setCurrentVideo(videoUrl);
     setIsLeaving(false);
   }, [videoUrl]);
 
+  // Fetch video from backend (intro or bye)
   const fetchVideo = async (type: "intro" | "bye") => {
     try {
       const res = await fetch(`http://127.0.0.1:8000/video/${type}`, {
@@ -29,7 +34,6 @@ export default function AvatarVideo({
       });
 
       const data = await res.json();
-      console.log(`>>> ${type} video response:`, data);
 
       if (!res.ok) {
         throw new Error(data.detail || "Failed to fetch video.");
@@ -39,22 +43,26 @@ export default function AvatarVideo({
         throw new Error("No video_url returned from backend.");
       }
 
+      // Update video source
       setCurrentVideo(data.video_url);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      // Error handling (kept minimal)
     }
   };
 
+  // Play introduction video
   const handleIntroduce = async () => {
     setIsLeaving(false);
     await fetchVideo("intro");
   };
 
+  // Play goodbye video and prepare to go back
   const handleBackClick = async () => {
     setIsLeaving(true);
     await fetchVideo("bye");
   };
 
+  // After video ends, trigger back if leaving
   const handleVideoEnded = () => {
     if (isLeaving) {
       onBack();
@@ -67,23 +75,27 @@ export default function AvatarVideo({
         JCU IDEAS LAB Assistant
       </h1>
 
+      {/* Loading state */}
       {loading && (
         <div className="py-10">
-          <p className="text-lg text-gray-600">Generating avatar video...</p>
+          <p className="text-lg text-gray-600">
+            Generating avatar video...
+          </p>
         </div>
       )}
 
+      {/* Error state */}
       {!loading && error && (
         <div className="py-10">
           <p className="text-lg text-red-500">{error}</p>
         </div>
       )}
 
+      {/* Video display */}
       {!loading && !error && currentVideo && (
         <div className="flex flex-col items-center gap-4">
-
           <video
-            key={currentVideo}
+            key={currentVideo} // force reload when URL changes
             width="420"
             controls
             autoPlay
@@ -96,6 +108,7 @@ export default function AvatarVideo({
         </div>
       )}
 
+      {/* Action buttons */}
       <div className="mt-8 flex justify-center gap-4">
         <button
           onClick={handleIntroduce}
